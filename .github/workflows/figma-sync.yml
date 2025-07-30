@@ -9,15 +9,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
-      - name: Auto Sync Figma
-        uses: primer/figma-action@v1
+          
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Sync Figma Components
+        uses: figma-export/action@v2
         with:
           figma-token: ${{ secrets.FIGMA_TOKEN }}
           file-id: 'q985eCyyyjz0Rrspon19iC'
-          output-dir: 'src/components/ui-pro'
+          
       - name: Commit changes
         run: |
           git config --global user.name 'github-actions'
