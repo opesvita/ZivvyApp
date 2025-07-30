@@ -1,0 +1,27 @@
+name: Auto Figma Sync
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Auto Sync Figma
+        uses: primer/figma-action@v1
+        with:
+          figma-token: ${{ secrets.FIGMA_TOKEN }}
+          file-id: 'q985eCyyyjz0Rrspon19iC'
+          output-dir: 'src/components/ui-pro'
+      - name: Commit changes
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'actions@github.com'
+          git add .
+          git commit -m "🤖 Auto-sync from Figma" || exit 0
+          git push
